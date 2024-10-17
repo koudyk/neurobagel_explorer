@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>NeuroBagel Explorer</title>
+    <script type="text/javascript" src="d3.v7.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="title">
+        <img src="2023-11-06_nb_ko_neurobagel-logo_no-words.png" class="logo">
+        <h1 id="title">NeuroBagel Explorer</h1>
+        <h3 id="subtitle">See what data is available at the subject level</h3>
+    </div>
+
+    <div id="barchart">
+        <script>
+            var lightGrey = [10, 5, 6, 10];
+            var darkGrey = [4, 2, 3, 4];
+            var xLabels = ["T1", "T2", "fMRI", "dMRI"]
+            var iSelected = [1, 2];
+
+            var height = 200
+            var width = 500
+
+            var svgBarChart = d3.select("#barchart").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            var rectLightGrey = svgBarChart.selectAll("rect.lightGreyBar")
+                .data(lightGrey)
+                .enter()
+                .append("rect")
+                .attr("class", "lightGreyBar")
+                .attr("x", function (d, i) { return 25 + i * 100; })
+                .attr("y", function (d) { return height - d * 10 - 20; })
+                .attr("width", 90)
+                .attr("height", function (d) { return d * 10; });
+
+            var rectDarkGrey = svgBarChart.selectAll("rect.darkGreyBar")
+                .data(darkGrey)
+                .enter()
+                .append("rect")
+                .attr("class", "darkGreyBar")
+                .attr("x", function (d, i) { return 25 + i * 100; })
+                .attr("y", function (d) { return height - d * 10 - 20; })
+                .attr("width", 90)
+                .attr("height", function (d) { return d * 10; });
+
+            var rectLightPink = svgBarChart.selectAll("rect.lightPinkBar")
+                .data(iSelected)
+                .enter()
+                .append("rect")
+                .attr("class", "lightPinkBar")
+                .attr("x", function (d) { return 25 + d * 100; })
+                .attr("y", function (d) { return height - lightGrey[d] * 10 - 20; })
+                .attr("width", 90)
+                .attr("height", function (d) { return lightGrey[d] * 10; });
+
+            var rectLightPink = svgBarChart.selectAll("rect.darkPinkBar")
+                .data(iSelected)
+                .enter()
+                .append("rect")
+                .attr("class", "darkPinkBar")
+                .attr("x", function (d) { return 25 + d * 100; })
+                .attr("y", function (d) { return height - darkGrey[d] * 10 - 20; })
+                .attr("width", 90)
+                .attr("height", function (d) { return darkGrey[d] * 10; });
+
+            var rectLabels = svgBarChart.selectAll("text.xLabels")
+                .data(xLabels)
+                .enter()
+                .append("text")
+                .attr("x", function (d, i) { return 25 + i * 100; })
+                .attr("y", height - 10)
+                .attr("dy", ".35em")
+                .text(function (d) { return d; });
+
+
+
+
+        </script>
+    </div>
+</body>
+
+</html>

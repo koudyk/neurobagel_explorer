@@ -1,0 +1,47 @@
+/* Ensure the body uses full width and sets flexbox layout */
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+div#title {
+    width: 100%;
+}
+
+h1#title {
+    color: #4e4e4e;
+    text-align: left;
+    margin-bottom: 20px;
+
+}
+
+h3#subtitle {
+    color: grey;
+}
+
+img.logo {
+    width: 80px;
+    height: 80px;
+}
+
+rect.lightGreyBar {
+    fill: lightgrey;
+}
+
+rect.darkGreyBar {
+    fill: grey;
+}
+
+rect.lightPinkBar {
+    fill: rgb(255, 217, 223);
+}
+
+rect.darkPinkBar {
+    fill: rgb(255, 164, 179)
+}
+
+#barchart {
+    position: relative;
+}
