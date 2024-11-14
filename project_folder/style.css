@@ -1,8 +1,8 @@
 /* Ensure the body uses full width and sets flexbox layout */
 body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
+    margin: 100px;
+    /* display: flex; */
+    /* flex-direction: column; */
     align-items: center;
     left: 200px;
 }
@@ -28,7 +28,7 @@ img.logo {
 }
 
 rect.lightGreyBar {
-    fill: lightgrey;
+    fill: rgb(220, 220, 220);
 }
 
 rect.darkGreyBar {
@@ -43,10 +43,14 @@ rect.darkPinkBar {
     fill: rgb(255, 164, 179)
 }
 
-div#barchart {
-    position: relative;
+.container {
+    float: left;
 }
 
 div#histogram {
-    position: relative;
+    width:75%;
+}
+
+div#barchart {
+    width:25%;
 }
