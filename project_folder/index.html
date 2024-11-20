@@ -44,7 +44,7 @@
                 }
 
                 // set the dimensions and margins of the graph
-                const margin = { top: 20, right: 20, bottom: 60, left: 40 },
+                const margin = { top: 20, right: 20, bottom: 80, left: 100 },
                     width = 500 - margin.left - margin.right,
                     height = 400 - margin.top - margin.bottom;
 
@@ -68,6 +68,10 @@
                     .append("g")
                     .attr("transform", `translate(${margin.left},${margin.top})`);
 
+                function drill(d, i) {
+
+                };
+
                 // create bars
                 svg.selectAll(".bar")
                     .data(unselectedData)
@@ -76,21 +80,44 @@
                     .attr("x", d => x(d.modality))
                     .attr("width", x.bandwidth())
                     .attr("y", d => y(d.count))
-                    .attr("height", d => height - y(d.count));
+                    .attr("height", d => height - y(d.count))
 
                 // add the x Axis
                 svg.append("g")
                     .attr("transform", `translate(0,${height})`)
                     .call(d3.axisBottom(x))
+                        .attr("class", "axis")
                         .selectAll("text")  
                         .style("text-anchor", "end")
-                        .attr("dx", "-.8em")
-                        .attr("dy", ".15em")
-                        .attr("transform", "rotate(-30)");
+                        .attr("dx", ".8em")
+                        .attr("dy", ".70em")
+                        .attr("transform", "rotate(-20)")
+                        .attr("font-size", "15");
+                        
+                        
+                // text label for the x axis
+                svg.append("text")             
+                    .attr("transform",
+                            "translate(" + (width/2) + " ," + 
+                                        (height + margin.top + 55) + ")")
+                    .style("text-anchor", "middle")
+                    .text("Imaging Modality");
 
                 // add the y Axis
                 svg.append("g")
-                    .call(d3.axisLeft(y));
+                    .call(d3.axisLeft(y))
+                        .attr("font-size", "15")
+                        .attr("class", "axis");
+
+                // text label for the y axis
+                svg.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 0 - margin.left)
+                    .attr("x",0 - (height / 2))
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .text("Number of Participants");  
+
             </script>
         </div>
 
@@ -117,18 +144,20 @@
                     unselectedData.push({ age: age, count: count });
                 }
 
-                // sort the data
-                unselectedData = unselectedData.sort(function(a, b) {
-                    return d3.ascending(a.key)
-                });
+                unselectedData.forEach(function(d) {
+                    d.age = +d.age;
+                    d.count = +d.count;
+                })
+
+                globalThis.unselectedData = unselectedData
 
                 // set the dimensions and margins of the graph
-                const margin = { top: 20, right: 20, bottom: 30, left: 40 },
+                const margin = { top: 20, right: 20, bottom: 80, left: 100 },
                     width = 700 - margin.left - margin.right,
                     height = 400 - margin.top - margin.bottom;
 
                 // set the ranges
-                const x = d3.scaleBand()
+                const x = d3.scaleLinear()
                     .range([0, width])
                    
                 const y = d3.scaleLinear()
@@ -136,7 +165,7 @@
 
 
                 // Scale the range of the data in the domains
-                x.domain(unselectedData.map(function (d) { return d.age; }));
+                x.domain([0, d3.max(unselectedData, function (d) { return d.age; })]);
                 y.domain([0, d3.max(unselectedData, function (d) { return d.count; })]);
 
                 // append the svg object to the body of the page
@@ -146,28 +175,49 @@
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
-                    .attr("transform", `translate(${margin.left},${margin.top})`);
+                    .attr("transform", `translate(${margin.left},${margin.top})`)
+            
 
-                // create bars
-                svg.selectAll(".bar")
-                    .data(unselectedData)
-                    .join("rect")
-                    .attr("class", "lightGreyBar")
-                    .attr("x", d => x(d.age))
-                    .attr("width", x.bandwidth())
-                    .attr("y", d => y(d.count))
-                    .attr("height", d => height - y(d.count))
+                var valueLine = d3.line()
+                    .x(function(d) { return x(d.age)})
+                    .y(function(d) {return y(d.count)});
+
+                // add the valueLine path
+                svg.append("path")
+                    .data([unselectedData])
+                    .attr("class", "line")
+                    .attr("d", valueLine);
 
                 // add the x Axis
                 svg.append("g")
                     .attr("transform", `translate(0,${height})`)
                     .call(d3.axisBottom(x))
-                        .selectAll("text")
+                        .attr("font-size", "15")
+                        .attr('class', "axis")
+                
+                  // text label for the x axis
+                svg.append("text")             
+                    .attr("transform",
+                            "translate(" + (width/2) + " ," + 
+                                        (height + margin.top + 20) + ")")
+                    .style("text-anchor", "middle")
+                    .text("Age (Years)");
 
                 // add the y Axis
                 svg.append("g")
-                    .call(d3.axisLeft(y));
-            </script>
+                    .call(d3.axisLeft(y))
+                        .attr("font-size", "15")
+                        .attr("class", "axis");
+
+                  // text label for the y axis
+                svg.append("text")
+                    .attr("transform", "rotate(-90)")
+                    .attr("y", 0 - margin.left)
+                    .attr("x",0 - (height / 2))
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .text("Number of participants");  
+                            </script>
         </div>
     </div>
 </body>

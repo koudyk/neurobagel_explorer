@@ -1,3 +1,4 @@
+
 /* Ensure the body uses full width and sets flexbox layout */
 body {
     margin: 100px;
@@ -58,4 +59,12 @@ div#barchart {
 .area {
     fill: lightsteelblue;
     stroke-width: 0;
+}
+.line{
+    fill: rgb(220, 220, 220);
+    stroke-width: 1;
+}
+
+.axis{
+    color: rgb(123, 123, 123);
 }
