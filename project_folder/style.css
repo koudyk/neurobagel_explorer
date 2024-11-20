@@ -54,3 +54,8 @@ div#histogram {
 div#barchart {
     width:25%;
 }
+
+.area {
+    fill: lightsteelblue;
+    stroke-width: 0;
+}

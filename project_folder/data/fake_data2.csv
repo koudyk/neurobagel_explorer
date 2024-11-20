@@ -1,0 +1,10 @@
+DatasetID,SubjectID,SessionID,SessionType,Age,Sex,Diagnosis,Assessment,SessionFilePath,NumPhenotypicSessions,NumImagingSessions,Modality
+http://neurobagel.org/vocab/b36e2047-1835-4202-8677-cd12fd3a5352,sub-01,ses-nb01,http://neurobagel.org/vocab/ImagingSession,,,,,/ds000248/sub-01,1,1,T1
+http://neurobagel.org/vocab/b36e2047-1835-4202-8677-cd12fd3a5352,sub-01,ses-nb01,http://neurobagel.org/vocab/PhenotypicSession,,,,,,1,1,
+http://neurobagel.org/vocab/b36e2047-1835-4202-8677-cd12fd3a5352,sub-emptyroom,ses-nb01,http://neurobagel.org/vocab/PhenotypicSession,,,,,,1,0,
+http://neurobagel.org/vocab/a8fe1117-5675-4b49-b7c2-53eceebcf6c9,sub-01,ses-nb01,http://neurobagel.org/vocab/PhenotypicSession,28,http://purl.bioontology.org/ontology/SNOMEDCT/248152002,,,,1,1,
+http://neurobagel.org/vocab/a8fe1117-5675-4b49-b7c2-53eceebcf6c9,sub-01,ses-second,http://neurobagel.org/vocab/ImagingSession,,,,,/ds003487/sub-01/ses-second,1,1,Flow
+http://neurobagel.org/vocab/a8fe1117-5675-4b49-b7c2-53eceebcf6c9,sub-02,ses-nb01,http://neurobagel.org/vocab/PhenotypicSession,31,http://purl.bioontology.org/ontology/SNOMEDCT/248153007,,,,1,1,
+http://neurobagel.org/vocab/a8fe1117-5675-4b49-b7c2-53eceebcf6c9,sub-02,ses-second,http://neurobagel.org/vocab/ImagingSession,,,,,/ds003487/sub-02/ses-second,1,1,Flow
+http://neurobagel.org/vocab/a8fe1117-5675-4b49-b7c2-53eceebcf6c9,sub-03,ses-nb01,http://neurobagel.org/vocab/PhenotypicSession,25,http://purl.bioontology.org/ontology/SNOMEDCT/248153007,,,,1,1,
+http://neurobagel.org/vocab/a8fe1117-5675-4b49-b7c2-53eceebcf6c9,sub-03,ses-second,http://neurobagel.org/vocab/ImagingSession,,,,,/ds003487/sub-03/ses-second,1,1,Flow
