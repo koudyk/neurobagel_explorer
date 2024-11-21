@@ -46,6 +46,7 @@ rect.darkPinkBar {
 
 .container {
     float: left;
+    width: 100%;
 }
 
 div#histogram {
