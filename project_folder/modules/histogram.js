@@ -1,5 +1,8 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7';
 
+import * as barchart from './barchart.js';
+import {state} from './state.js';
+
 export function draw(svg, data, margin, dim) {
     const width = dim.w,
           height = dim.h;
@@ -57,4 +60,60 @@ export function draw(svg, data, margin, dim) {
          .style("text-anchor", "middle")
          .style("fill", "black")
          .text("Number of participants");
+
+    // add an invisible overlay, which will show the brush's selection
+    container.append("path").attr("class", "overlay")
+        .datum(data)
+        .style("fill", 'none') // invisible
+        .attr("d", valueLine);
+
+    // Brush configuration
+    const brush = d3.brushX()
+        .extent([[margin.left, 0], [width - margin.right, height - margin.bottom]]) // brush extent is the chart area
+        .on("brush", function (evt) {
+            if(evt.selection) {
+                const [minX,maxX] = evt.selection;
+                const minAge = Math.round(x.invert(minX));
+                const maxAge = Math.round(x.invert(maxX));
+
+                state.ageSelection = [minAge, maxAge]; // store the data collected by the brush
+                barchart.update(); // update the bar chart
+            }
+        })
+        .on("end", function (evt) {
+            if(evt.selection) {
+                const [minX, maxX] = evt.selection;
+                const minAge = Math.round(x.invert(minX));
+                const maxAge = Math.round(x.invert(maxX))
+
+                console.log(minAge, maxAge);           // this is the final data collected by the brush
+                state.ageSelection = [minAge, maxAge]; // store the final data collected by the brush
+                barchart.update();                     // update the bar chart
+
+                container.select(".overlay")
+                    .datum(data.filter(d => d.age >= minAge && d.age <= maxAge))  // filter the data according to the brush's selection
+                    .style("fill", "pink")       // add color to the overlay
+                    .attr("d", valueLine);       // update the overlay's path with the new data
+
+                d3.select(".selection").style("fill", 'none'); // make the brush's rectangle invisible
+            }
+        });
+
+    // Double-click to dismiss the brush
+    svg.on("dblclick", (evt) => {
+        brush.clear(container);
+        d3.select(".overlay")
+            .style("fill", "none")
+            .datum(data)
+            .attr("d", valueLine);
+        container.call(brush);
+        state.ageSelection = [0, 100];  // store the final data collected by the brush
+        barchart.update();              // update the bar chart
+    });
+
+    container.call(brush);
 }
+
+
+
+

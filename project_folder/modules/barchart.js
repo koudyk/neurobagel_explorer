@@ -1,5 +1,7 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7';
 
+import {state} from './state.js';
+
 export function draw(svg, data, margin, dim) {
 
     const width = dim.w,
@@ -65,4 +67,18 @@ export function draw(svg, data, margin, dim) {
         .style("text-anchor", "middle")
         .style("fill", "black")
         .text("Number of participants");
+
+    // placing a temporary label to demonstrate the update function
+    const temp = container.append("text").attr("class", "temp-label")
+        .attr("x", 100)
+        .attr("y", 20)
+        .style("font-size", "20");
+    temp.append("tspan").text(`Min age: 0`);
+    temp.append("tspan").attr("dy", "1.2em").attr("x", 100).text(`Max age: 100`);
+}
+
+export function update() {
+    d3.select(".temp-label").selectAll("tspan")
+        .data(state.ageSelection)
+        .text((d,i) => `${i === 0 ? 'Min' : 'Max'} age: ${d}`);
 }
