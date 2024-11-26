@@ -1,6 +1,7 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7';
 
 import * as barchart from './barchart.js';
+import * as symbolbar from "./symbol-bar.js"
 import {state} from './state.js';
 
 export function draw(svg, data, margin, dim) {
@@ -66,6 +67,16 @@ export function draw(svg, data, margin, dim) {
         .datum(data)
         .style("fill", 'none') // invisible
         .attr("d", valueLine);
+    
+    // function to sum the numbers of participants between two ages
+    function sumAgeCounts (data, minAge, maxAge) {
+        const subset = data.filter(subject => subject.age >= minAge && subject.age <= maxAge);
+        let count = 0;
+        for (let i = 0; i < subset.length; i++) {
+            count += subset[i].count;
+        };
+        return count
+    }
 
     // Brush configuration
     const brush = d3.brushX()
@@ -75,20 +86,27 @@ export function draw(svg, data, margin, dim) {
                 const [minX,maxX] = evt.selection;
                 const minAge = Math.round(x.invert(minX));
                 const maxAge = Math.round(x.invert(maxX));
+                const count = sumAgeCounts(data, minAge, maxAge);
 
-                state.ageSelection = [minAge, maxAge]; // store the data collected by the brush
+                // store the data collected by the brush
+                state.numSubjSelected = [count];
+                state.ageSelection = [minAge, maxAge]; 
+                
                 barchart.update(); // update the bar chart
+                symbolbar.update();
             }
         })
         .on("end", function (evt) {
             if(evt.selection) {
                 const [minX, maxX] = evt.selection;
                 const minAge = Math.round(x.invert(minX));
-                const maxAge = Math.round(x.invert(maxX))
+                const maxAge = Math.round(x.invert(maxX));
+                const count = sumAgeCounts(data, minAge, maxAge);
 
-                console.log(minAge, maxAge);           // this is the final data collected by the brush
+                state.numSubjSelected = [count];
                 state.ageSelection = [minAge, maxAge]; // store the final data collected by the brush
                 barchart.update();                     // update the bar chart
+                symbolbar.update();
 
                 container.select(".overlay")
                     .datum(data.filter(d => d.age >= minAge && d.age <= maxAge))  // filter the data according to the brush's selection
@@ -108,7 +126,9 @@ export function draw(svg, data, margin, dim) {
             .attr("d", valueLine);
         container.call(brush);
         state.ageSelection = [0, 100];  // store the final data collected by the brush
+        state.numSubjSelected = [0];
         barchart.update();              // update the bar chart
+        symbolbar.update();
     });
 
     container.call(brush);

@@ -69,7 +69,7 @@ export function draw(svg, data, margin, dim) {
         .text("Number of participants");
 
     // placing a temporary label to demonstrate the update function
-    const temp = container.append("text").attr("class", "temp-label")
+    const temp = container.append("text").attr("class", "barchart-text")
         .attr("x", 100)
         .attr("y", 20)
         .style("font-size", "20");
@@ -78,7 +78,7 @@ export function draw(svg, data, margin, dim) {
 }
 
 export function update() {
-    d3.select(".temp-label").selectAll("tspan")
+    d3.select(".barchart-text").selectAll("tspan")
         .data(state.ageSelection)
         .text((d,i) => `${i === 0 ? 'Min' : 'Max'} age: ${d}`);
 }
