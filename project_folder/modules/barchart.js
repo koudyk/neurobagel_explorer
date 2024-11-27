@@ -2,7 +2,10 @@ import * as d3 from 'https://cdn.skypack.dev/d3@7';
 
 import {state} from './state.js';
 
-export function draw(svg, data, margin, dim) {
+export function draw(svg, subjLevelData, margin, dim, fill) {
+    const field = "Modality";
+    const groups = d3.groups(subjLevelData, d => d[field]);
+    const dataset = groups.map(g => ({[field.toLowerCase()]: g[0], count: g[1].length}));
 
     const width = dim.w,
           height = dim.h;
@@ -18,14 +21,19 @@ export function draw(svg, data, margin, dim) {
                 .range([height - margin.bottom, 0]);
 
     // Scale the range of the data in the domains
-    x.domain(data.map(d => d.modality));
-    y.domain([0, d3.max(data, d => d.count)]);
+    x.domain(dataset.map(d => d.modality));
+    y.domain([0, d3.max(dataset, d => d.count)]);
+
+    // make some variables available for other functions
+    globalThis.x = x;
+    globalThis.y = y;
+    globalThis.container = container;
 
     // create bars
     container.selectAll(".bar")
-        .data(data)
+        .data(dataset)
         .join("rect")
-        .attr("class", "lightGreyBar")
+        .attr("fill", fill)
         .attr("x", d => x(d.modality))
         .attr("width", x.bandwidth())
         .attr("y", d => y(d.count))
@@ -75,10 +83,28 @@ export function draw(svg, data, margin, dim) {
         .style("font-size", "20");
     temp.append("tspan").text(`Min age: 0`);
     temp.append("tspan").attr("dy", "1.2em").attr("x", 100).text(`Max age: 100`);
+    return
 }
 
 export function update() {
     d3.select(".barchart-text").selectAll("tspan")
         .data(state.ageSelection)
         .text((d,i) => `${i === 0 ? 'Min' : 'Max'} age: ${d}`);
+}
+
+export function tempUpdate(svg, dataSubset, margin, dim, fill) {
+    const field = "Modality";
+    const groups = d3.groups(dataSubset, d => d[field]);
+    const dataset = groups.map(g => ({[field.toLowerCase()]: g[0], count: g[1].length}));
+
+    // create bars
+    container.selectAll(".bar")
+        .data(dataset)
+        .join("rect")
+        .attr("fill", fill)
+        .attr("x", d => x(d.modality))
+        .attr("width", x.bandwidth())
+        .attr("y", d => y(d.count))
+        .attr("height", d => dim.h - y(d.count) - margin.bottom)
+
 }

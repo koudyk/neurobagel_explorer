@@ -1,5 +1,7 @@
 import * as d3 from 'https://cdn.skypack.dev/d3@7';
 
+import {state} from "./state.js"
+
 // import modules used by the application (imports are relative to current directory)
 import * as histogram from './histogram.js';
 import * as barchart from './barchart.js';
@@ -10,13 +12,16 @@ import * as data from './data.js';
 const modalityFile = "data/modality.csv";
 const demographicsFile = "data/demographics.csv";
 
+const modality = await data.fetch(modalityFile);
+const demographics = data.fetch(demographicsFile);
+
 // obtain the data
-const unselectedModalityData = await data.getData(modalityFile, 'Modality');
-const unselectedAgeData = await data.getData(demographicsFile, 'Age');
+const unselectedModalityData = await data.getCounts(modalityFile, 'Modality');
+const unselectedAgeData = await data.getCounts(demographicsFile, 'Age');
 
 // set dimensions (of the container) and margins (inside the container)
-const dimBar  = {w: 500, h: 350};
-const dimHist = {w: 500, h: 350};
+const dimBar  = {w: 500, h: 400};
+const dimHist = {w: 500, h: 400};
 const dimSym  = {w: 1000, h: 100};
 const margin = { top: 20, right: 20, bottom: 90, left: 80 };
 
@@ -31,5 +36,8 @@ d3.select("svg").attr("width", '100%').attr("height", '100%');
 
 // render the charts
 symbolbar.draw(svgSym, margin, dimSym);
-barchart.draw(svgBar, unselectedModalityData, margin, dimBar);
+await barchart.draw(svgBar, modality, margin, dimBar, "grey");
 histogram.draw(svgHist, unselectedAgeData, margin, dimHist);
+
+const temp = modality.slice(100, 14000);
+barchart.tempUpdate(svgBar, temp, margin, dimBar, "pink");
