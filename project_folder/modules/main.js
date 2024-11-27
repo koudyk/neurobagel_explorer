@@ -15,6 +15,8 @@ const demographicsFile = "data/demographics.csv";
 const modality = await data.fetch(modalityFile);
 const demographics = data.fetch(demographicsFile);
 
+const maxCount = [modality.length];
+const count = [modality.length - 5000];
 // obtain the data
 const unselectedModalityData = await data.getCounts(modalityFile, 'Modality');
 const unselectedAgeData = await data.getCounts(demographicsFile, 'Age');
@@ -35,9 +37,10 @@ const svgSym = d3.select("#symbol-bar").append("svg")
 d3.select("svg").attr("width", '100%').attr("height", '100%');
 
 // render the charts
-symbolbar.draw(svgSym, margin, dimSym);
 await barchart.draw(svgBar, modality, margin, dimBar, "grey");
 histogram.draw(svgHist, unselectedAgeData, margin, dimHist);
+symbolbar.draw(svgSym, count, maxCount, margin, dimSym);
+
 
 const temp = modality.slice(100, 14000);
 barchart.tempUpdate(svgBar, temp, margin, dimBar, "pink");
