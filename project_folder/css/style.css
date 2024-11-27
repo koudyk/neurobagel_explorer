@@ -30,6 +30,7 @@ img.logo {
 
 rect.lightGreyBar {
     fill: rgb(220, 220, 220);
+    opacity: 0.5;
 }
 
 rect.darkGreyBar {
@@ -50,11 +51,11 @@ rect.darkPinkBar {
 }
 
 div#histogram {
-    width:75%;
+    width:50%;
 }
 
 div#barchart {
-    width:25%;
+    width:50%;
 }
 
 .area {

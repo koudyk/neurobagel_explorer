@@ -15,8 +15,8 @@ const unselectedModalityData = await data.getData(modalityFile, 'Modality');
 const unselectedAgeData = await data.getData(demographicsFile, 'Age');
 
 // set dimensions (of the container) and margins (inside the container)
-const dimBar  = {w: 500, h: 400};
-const dimHist = {w: 700, h: 400};
+const dimBar  = {w: 500, h: 350};
+const dimHist = {w: 500, h: 350};
 const dimSym  = {w: 1000, h: 100};
 const margin = { top: 20, right: 20, bottom: 90, left: 80 };
 
