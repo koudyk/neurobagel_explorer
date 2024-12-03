@@ -8,10 +8,12 @@ export function drawContainer(svg, margin, dim) {
 
 }
 
-export function draw(svg, count, maxCount, margin, dim, fill) {
+export function draw(svg, margin, dim, fill) {
 
-    // maxCount = [state.subjDataBar.length];
-    // count = state.numSubjSelected;
+    const maxCount = state.numSubjTotal;
+    const count = state.numSubjSelected;
+    globalThis.count = count;
+    globalThis.maxCount = maxCount;
 
     const dataset = maxCount.map((d,i) => ({id: i, value: d})); // so that bars can be identified
     const cells = d3.range(25);     // number of symbols in each bar

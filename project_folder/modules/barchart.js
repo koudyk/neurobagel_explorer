@@ -128,20 +128,3 @@ export function update() {
         .data(state.ageSelection)
         .text((d,i) => `${i === 0 ? 'Min' : 'Max'} age: ${d}`);
 }
-
-export function tempUpdate(container, dataSubset, margin, dim, fill) {
-    const field = "Modality";
-    const groups = d3.groups(dataSubset, d => d[field]);
-    const dataset = groups.map(g => ({[field.toLowerCase()]: g[0], count: g[1].length}));
-
-    // create bars
-    container.selectAll(".bar")
-        .data(dataset)
-        .join("rect")
-        .attr("fill", fill)
-        .attr("x", d => x(d.modality))
-        .attr("height", x.bandwidth())
-        .attr("y", d => y(d.count))
-        .attr("width", d => dim.h - y(d.count) - margin.bottom)
-
-}

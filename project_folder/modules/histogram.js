@@ -97,19 +97,21 @@ export function draw(svg, subjLevelData, margin, dim, fill) {
 
     // set defaults for state
     let ages = [];
-    for (let i = 0; i < dataset.length; i++) {
-        ages.push(dataset[i].age);
+    for (let i = 0; i < subjLevelData.length; i++) {
+        ages.push(subjLevelData[i].Age);
     }
     const minAge = 0; //d3.min(ages);
-    const maxAge = d3.max(ages);
-    const count = sumAgeCounts(dataset, minAge, maxAge);
+    const maxAge = 100;
     const ptps = getSubsetParticipants(minAge, maxAge);
-    
+    const count = ptps.length;
+
+    state.numSubjTotal = [subjLevelData.length];
     state.subsetParticipants = ptps;
     state.numSubjSelected = [count];
     state.ageSelection = [minAge, maxAge];
     barchart.update();
     symbolbar.update();
+    // symbolbar.draw();
     // barchart.drawBar("pink");
 
     // Brush configuration
@@ -131,6 +133,7 @@ export function draw(svg, subjLevelData, margin, dim, fill) {
                 barchart.update(); // update the bar chart
                 symbolbar.update();
                 barchart.drawBar("pink");
+                symbolbar.draw();
             }
         })
         .on("end", function (evt) {
@@ -149,6 +152,7 @@ export function draw(svg, subjLevelData, margin, dim, fill) {
                 barchart.update();                     
                 symbolbar.update();
                 barchart.drawBar("pink");
+                // symbolbar.draw();
 
                 container.select(".overlay")
                     .datum(dataset.filter(d => d.age >= minAge && d.age <= maxAge))  // filter the data according to the brush's selection
@@ -173,6 +177,7 @@ export function draw(svg, subjLevelData, margin, dim, fill) {
         barchart.update();              // update the bar chart
         symbolbar.update();
         barchart.drawBar("pink");
+        // symbolbar.draw();
     });
 
     container.call(brush);

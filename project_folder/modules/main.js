@@ -42,9 +42,7 @@ d3.select("svg").attr("width", '100%').attr("height", '100%');
 histogram.draw(svgHist, demographics, margin, dimHist, "grey");
 barchart.drawContainer(svgBar, modality, margin, dimBar);
 barchart.drawBar("grey")
-const count = [10000];
-const maxCount = [modality.length];
-symbolbar.draw(svgSym, count, maxCount, margin, dimSym)
+symbolbar.draw(svgSym, margin, dimSym)
 
 
 globalThis.state = state;
