@@ -73,8 +73,8 @@ export function drawContainer(svg, subjLevelData, margin, dim)  {
         .attr("x", 100)
         .attr("y", 20)
         .style("font-size", "20");
-    temp.append("tspan").text(`Min age: 0`);
-    temp.append("tspan").attr("dy", "1.2em").attr("x", 100).text(`Max age: 100`);
+    temp.append("tspan").text(`Min age:`);
+    temp.append("tspan").attr("dy", "1.2em").attr("x", 100).text(`Max age:`);
 
     // save the state
     state.subjDataBar = subjLevelData;
