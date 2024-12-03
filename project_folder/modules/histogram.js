@@ -4,7 +4,11 @@ import * as barchart from './barchart.js';
 import * as symbolbar from "./symbol-bar.js"
 import {state} from './state.js';
 
-export function draw(svg, data, margin, dim) {
+export function draw(svg, subjLevelData, margin, dim, fill) {
+    const field = "Age";
+    const groups = d3.groups(subjLevelData, d => d[field]);
+    const dataset = groups.map(g => ({[field.toLowerCase()]: g[0], count: g[1].length}));
+    
     const width = dim.w,
           height = dim.h;
 
@@ -24,13 +28,13 @@ export function draw(svg, data, margin, dim) {
                         .y0(y(0));
 
     // Scale the range of the data in the domains
-    x.domain([0, d3.max(data, d => d.age)]);
-    y.domain([0, d3.max(data, d => d.count)]);
+    x.domain([0, d3.max(dataset, d => d.age)]);
+    y.domain([0, d3.max(dataset, d => d.count)]);
 
     // add the valueLine path
     container.append("path")
-             .datum(data)
-                .attr("class", "line")
+             .datum(dataset)
+                .attr("fill", fill)
                 .attr("d", valueLine);
 
     // add the x Axis
@@ -64,19 +68,49 @@ export function draw(svg, data, margin, dim) {
 
     // add an invisible overlay, which will show the brush's selection
     container.append("path").attr("class", "overlay")
-        .datum(data)
+        .datum(dataset)
         .style("fill", 'none') // invisible
         .attr("d", valueLine);
-    
+
+
     // function to sum the numbers of participants between two ages
-    function sumAgeCounts (data, minAge, maxAge) {
-        const subset = data.filter(subject => subject.age >= minAge && subject.age <= maxAge);
+    function sumAgeCounts (dataset, minAge, maxAge) {
+        const subset = dataset.filter(subject => subject.age >= minAge && subject.age <= maxAge);
         let count = 0;
         for (let i = 0; i < subset.length; i++) {
             count += subset[i].count;
         };
         return count
     }
+
+    function getSubsetParticipants (minAge, maxAge) {
+        let ptps = [];
+        for (let i = 0; i < subjLevelData.length; i++) {
+            if (subjLevelData[i].Age > minAge) {
+                if (subjLevelData[i].Age < maxAge) {
+                    ptps.push(subjLevelData[i].ID);
+                }
+            }            
+        }
+        return ptps
+    }
+
+    // set defaults for state
+    let ages = [];
+    for (let i = 0; i < dataset.length; i++) {
+        ages.push(dataset[i].age);
+    }
+    const minAge = 0; //d3.min(ages);
+    const maxAge = d3.max(ages);
+    const count = sumAgeCounts(dataset, minAge, maxAge);
+    const ptps = getSubsetParticipants(minAge, maxAge);
+    
+    state.subsetParticipants = ptps;
+    state.numSubjSelected = [count];
+    state.ageSelection = [minAge, maxAge];
+    barchart.update();
+    symbolbar.update();
+    // barchart.drawBar("pink");
 
     // Brush configuration
     const brush = d3.brushX()
@@ -86,14 +120,17 @@ export function draw(svg, data, margin, dim) {
                 const [minX,maxX] = evt.selection;
                 const minAge = Math.round(x.invert(minX));
                 const maxAge = Math.round(x.invert(maxX));
-                const count = sumAgeCounts(data, minAge, maxAge);
-
+                const count = sumAgeCounts(dataset, minAge, maxAge);
+                const ptps = getSubsetParticipants(minAge, maxAge);
+    
                 // store the data collected by the brush
+                state.subsetParticipants = ptps;
                 state.numSubjSelected = [count];
-                state.ageSelection = [minAge, maxAge]; 
+                state.ageSelection = [minAge, maxAge];
                 
                 barchart.update(); // update the bar chart
                 symbolbar.update();
+                barchart.drawBar("pink");
             }
         })
         .on("end", function (evt) {
@@ -101,15 +138,20 @@ export function draw(svg, data, margin, dim) {
                 const [minX, maxX] = evt.selection;
                 const minAge = Math.round(x.invert(minX));
                 const maxAge = Math.round(x.invert(maxX));
-                const count = sumAgeCounts(data, minAge, maxAge);
-
+                const count = sumAgeCounts(dataset, minAge, maxAge);
+                const ptps = getSubsetParticipants(minAge, maxAge);
+    
+                // store the data collected by the brush
+                state.subsetParticipants = ptps;
                 state.numSubjSelected = [count];
-                state.ageSelection = [minAge, maxAge]; // store the final data collected by the brush
-                barchart.update();                     // update the bar chart
+                state.ageSelection = [minAge, maxAge]; 
+
+                barchart.update();                     
                 symbolbar.update();
+                barchart.drawBar("pink");
 
                 container.select(".overlay")
-                    .datum(data.filter(d => d.age >= minAge && d.age <= maxAge))  // filter the data according to the brush's selection
+                    .datum(dataset.filter(d => d.age >= minAge && d.age <= maxAge))  // filter the data according to the brush's selection
                     .style("fill", "pink")       // add color to the overlay
                     .attr("d", valueLine);       // update the overlay's path with the new data
 
@@ -122,13 +164,15 @@ export function draw(svg, data, margin, dim) {
         brush.clear(container);
         d3.select(".overlay")
             .style("fill", "none")
-            .datum(data)
-            .attr("d", valueLine);
-        container.call(brush);
-        state.ageSelection = [0, 100];  // store the final data collected by the brush
-        state.numSubjSelected = [0];
+            .datum(dataset)
+            .attr("d", );
+        container.call(bruvalueLinesh);
+        state.subsetParticipants = ptps;
+        state.ageSelection = [minAge, maxAge];  // store the final data collected by the brush
+        state.numSubjSelected = 0;
         barchart.update();              // update the bar chart
         symbolbar.update();
+        barchart.drawBar("pink");
     });
 
     container.call(brush);

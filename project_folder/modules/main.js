@@ -13,13 +13,16 @@ const modalityFile = "data/modality.csv";
 const demographicsFile = "data/demographics.csv";
 
 const modality = await data.fetch(modalityFile);
-const demographics = data.fetch(demographicsFile);
+const demographics = await data.fetch(demographicsFile);
 
 const maxCount = [modality.length];
-const count = [modality.length - 5000];
 // obtain the data
-const unselectedModalityData = await data.getCounts(modalityFile, 'Modality');
-const unselectedAgeData = await data.getCounts(demographicsFile, 'Age');
+// const unselectedModalityData = await data.getCounts(modalityFile, 'Modality');
+// const unselectedAgeData = await data.getCounts(demographicsFile, 'Age');
+
+
+
+
 
 // set dimensions (of the container) and margins (inside the container)
 const dimBar  = {w: 500, h: 400};
@@ -37,10 +40,38 @@ const svgSym = d3.select("#symbol-bar").append("svg")
 d3.select("svg").attr("width", '100%').attr("height", '100%');
 
 // render the charts
-await barchart.draw(svgBar, modality, margin, dimBar, "grey");
-histogram.draw(svgHist, unselectedAgeData, margin, dimHist);
-symbolbar.draw(svgSym, count, maxCount, margin, dimSym);
+histogram.draw(svgHist, demographics, margin, dimHist, "grey");
+barchart.drawContainer(svgBar, modality, margin, dimBar);
+barchart.drawBar("grey")
+
+// save the state
+// state.svgBar = svgBar;
+// state.svgHist = svgHist;
+
+// state.subjDataModality = modality;
+// state.subjDataDemographics = demographics;
+
+// state.margin = margin;
+
+// state.dimBar = dimBar;
+// state.dimHist = dimHist;
 
 
-const temp = modality.slice(100, 14000);
-barchart.tempUpdate(svgBar, temp, margin, dimBar, "pink");
+
+
+// symbolbar.draw(svgSym, maxCount, maxCount, margin, dimSym, "grey");
+
+// // update the charts 
+// let modalitySubset = [];
+// for (let i = 0; i < modality.length; i++) {
+//     if (state.subsetParticipants.indexOf(modality[i].ID) > -1) {
+//         modalitySubset.push(modality[i]);
+//     }
+// }
+// barchart.tempUpdate(container, modalitySubset, margin, dimBar, "pink");
+
+globalThis.state = state;
+
+
+// barchart.tempUpdate(svgBar, modalitySubset, margin, dimBar, "pink");
+// symbolbar.tempUpdate(svgSym, state.numSubjSelected, maxCount, margin, dimSym, "red");
