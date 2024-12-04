@@ -8,14 +8,9 @@ export function drawContainer(svg, subjLevelData, margin, dim)  {
     const groups = d3.groups(subjLevelData, d => d[field]);
     const dataset = groups.map(g => ({[field.toLowerCase()]: g[0], count: g[1].length}));
     
-    // let container;
-    // if (firstTime) {
     const container = svg.append("g")
         .attr("class", "chart")
         .attr("transform", `translate(0,${margin.top})`);
-    // } else {
-    //     container = svg.select("g.container");
-    // }
 
     // set the ranges
     const x = d3.scaleBand()
@@ -27,8 +22,6 @@ export function drawContainer(svg, subjLevelData, margin, dim)  {
     // Scale the range of the data in the domains
     x.domain(dataset.map(d => d.modality));
     y.domain([0, d3.max(dataset, d => d.count)]);
-
-
 
     // add the x Axis
     const xAxis = container.append("g")
@@ -69,12 +62,12 @@ export function drawContainer(svg, subjLevelData, margin, dim)  {
 
 
     // placing a temporary label to demonstrate the update function
-    const temp = container.append("text").attr("class", "barchart-text")
+    const barchartText = container.append("text").attr("class", "barchart-text")
         .attr("x", 100)
         .attr("y", 20)
         .style("font-size", "20");
-    temp.append("tspan").text(`Min age:`);
-    temp.append("tspan").attr("dy", "1.2em").attr("x", 100).text(`Max age:`);
+    barchartText.append("tspan").text(`Min age:`);
+    barchartText.append("tspan").attr("dy", "1.2em").attr("x", 100).text(`Max age:`);
 
     // save the state
     state.subjDataBar = subjLevelData;
@@ -89,6 +82,7 @@ export function drawContainer(svg, subjLevelData, margin, dim)  {
 export function drawBar(fill) {
     const subjLevelData = state.subjDataBar;
     const container = state.containerBar;
+    const svg = state.svgBar;
     const dim = state.dimBar;
     const margin = state.margin;
     const x = state.xBar;
@@ -108,19 +102,21 @@ export function drawBar(fill) {
     const groups = d3.groups(subjDataSubset, d => d[field]);
     const dataset = groups.map(g => ({[field.toLowerCase()]: g[0], count: g[1].length}));
     
+    createBars("grey");
+    createBars(fill);
+
     // create bars
-    container.selectAll(".bar")
-        .data(dataset)
-        .join("rect")
-        .attr("fill", fill)
-        .attr("x", d => x(d.modality))
-        .attr("width", x.bandwidth())
-        .attr("y", d => y(d.count))
-        .attr("height", d => dim.h - y(d.count) - margin.bottom)
-
-    // save the state
-    // state.containerBar = container;
-
+    function createBars(fill) {
+        container.selectAll(".bar" + fill)
+            .data(dataset)
+            .join("rect")
+            .attr("fill", fill)
+            // .attr("opacity", 0.5)
+            .attr("x", d => x(d.modality))
+            .attr("width", x.bandwidth())
+            .attr("y", d => y(d.count))
+            .attr("height", d => dim.h - y(d.count) - margin.bottom);
+    };
 }
 
 export function update() {

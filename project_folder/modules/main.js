@@ -40,9 +40,12 @@ d3.select("svg").attr("width", '100%').attr("height", '100%');
 
 // render the charts
 histogram.draw(svgHist, demographics, margin, dimHist, "grey");
+
 barchart.drawContainer(svgBar, modality, margin, dimBar);
 barchart.drawBar("grey")
-symbolbar.draw(svgSym, margin, dimSym)
+
+symbolbar.drawContainer(svgSym, margin, dimSym)
+symbolbar.drawSymbols("grey")
 
 
 globalThis.state = state;
